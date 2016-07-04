@@ -1,0 +1,176 @@
+---
+title: "Text_Mining_Reuters"
+author: "Montse Figueiro"
+date: "4 de julio de 2016"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+#Prepocesamiento con el Paquete tm
+
+APUNTES:
+Vamos a terminar construyengo una matriz de frecuencias,las filas son documentos, las entradas son
+el numero de veces que ocurren,las columnas son terminos, puedes estudiar classificacion,
+clustering, detección de temas, representacion grafica, nubes palabras. Los documentos pueden ser novelas, 
+estas matrices son bags of words. es convertirlo en conteo de palabras, con eso destruyes el texto pero 
+puedes hacer ciertas cosas. A veces te quedas con trigramas (trios de palabras) o n-gramas (n palabras consecutivas en el texto)
+Los trigramas son más utiles en el inglés (muy estructurado), proque todo está hecho para le inglés y el español es un poco diferente.
+**ngrams google**
+
+###Matrices de frecuencias: 
+  
+Pasos a Seguir:  
+
+  * tokenizacion: parte los textos en palabras. Las palabras que componen un texto, cuales son los  separadores posibles, hay un problema por ejemplo espresiones como "estar en los cerros de úbeda" es una expresion como una sola palabra.
+Nombres propios es una sola palabras "Tribunal de cuentas" es una sola palabra, esto exige tener un buen "ner" named entity recognition, que te permita detectar objetos sujetos cuyo nombre nombres consta de varias palabras. Coges el BOE y quieres saber de que se está hablando. Es más complicado de llo que parece. Mayusculas
+separadas por un de, hay un diccionario de nombres propios y los encuentra....
+
+
+  * Eliminación palabras comunes (y, la, a), son demasiado comunes y no sirven para los analisis, hay listas por idiomas estas palabras no aportan nada, son frecuentes en todos losdocumentos, TF-IDF es una medida que da peso a los términos que aparecen frecuentemente pero que quieres que aparezcan no en todos los documentos sino también en un subconjunto de documentos.
+TF- term frecuency
+IDF- inverse document frequency que aparezca en pocos documentos.
+quieres dar más peso a uno sobre otro, quieres calibrar que parte es más interesante.
+cogemos texto, quitamos palabras comunes, tienen el TFIDF más alto.
+
+  * Lematización: buscar raíz de las palabras (casa puede ser de casa, de casar) el verbo puede tener mas de 100 formas distintas en español, el españoles muy flexible morfológicamente, una palabra suelta no sabes que raiz tiene "casas", es casa o casar? hay metodos basados en reglas, snowball. Otros basados en diccionarios, es una busqueda directamente en diccionario, solo que te puede dar varias raices. Basados en máquinas de estados finitos.
+puedes tener todos los verbos conjugados (esto lo hace el movil cuando predice).
+
+Snowball: lo usan mucho, es un algoritm, te da una coleccion de raíz de palabras, en algunos casos coincide en otros no. Es muy bruto.
+
+Si quieres contar el numero de palabras en un discurso, con Snowball no queda bien, hay palabras que las utilizas con varios generos, no las suma.
+
+  * sinónimos: cuando escribes tratas de no repetir palabras, te gustaría deshacer eso, hay que utilizar diccionarios.
+
+Con esto ya tenemos la matriz de frecuencias.
+
+Hoy te casas, hoy es adverbio, te es pronombre y casas puede ser nombre overbo, te calcula las probabilidades de que sea una opcion u otra. Usando modelos de Markov
+
+
+##Librerias
+```{r,warning=FALSE,error=FALSE}
+library(tm)
+library(wordcloud)
+library(Rcpp)
+library(RColorBrewer)
+```
+##Corpus Sources and Readers:
+```{r}  
+getSources()
+getReaders()
+```
+##Data reuters
+```{r}
+data("acq")
+acq[[1]]
+ruta<- system.file("texts", "acq", package = "tm")
+ruta
+```
+```{r}
+reuters <- VCorpus(DirSource(ruta),
+                   readerControl = list(reader = readReut21578XMLasPlain))
+
+reuters[[1]]
+```
+```{r}
+inspect(reuters[1])
+str(reuters[1])
+reuters[[1]]$content
+```
+Un Corpus es una lista de documentos; cada documento tiene el texto y un conjunto de metadatos (que no usaremos)
+
+##transformaciones: tm_map aplica una función a cada documento
+```{r}
+reuters <- tm_map(reuters, stripWhitespace) # quitar los espacios en blanco que están de más sobre cada comentarios
+reuters <- tm_map(reuters, content_transformer(tolower))#tolower hay que meterla dentro sino no funciona bien,
+#pasa todas las palabras a minúsculas
+reuters <- tm_map(reuters, removePunctuation)#elimina comas y puntos
+reuters <- tm_map(reuters, removeWords, stopwords("en"))#quitamos palabras stopwords,trae una lista, son palabras
+#comunes sin importancia en el análisis.
+```
+```{r}
+reuters[[1]]$content
+class(reuters)
+```
+
+##Raíz de las palabras con Snowballc
+```{r,warning=FALSE,error=FALSE}
+library(SnowballC)
+Snowreuters <- tm_map(reuters[1:10], stemDocument)
+Snowreuters[[1]]$content
+```
+
+##WordCloud reuters
+
+```{r}
+wordcloud(reuters,scale=c(5,0.5),max.words=100,random.order=FALSE,rot.per=0.35,use.r.layout=FALSE,
+          colors=brewer.pal(8, "Dark2"))
+```
+```{r}
+wordcloud(Snowreuters,scale=c(5,0.5),max.words=100,random.order=FALSE,rot.per=0.35,use.r.layout=FALSE,
+          colors=brewer.pal(1, "Dark2"))
+```
+##word matrix
+
+```{r}
+matrix <- DocumentTermMatrix(reuters) #matriz original de frecuencias
+findFreqTerms(matrix, 100)#aparecen mas de 100 veces
+findFreqTerms(matrix,50)#aparecen más de 50 veces
+freq.term <- findFreqTerms(matrix,lowfreq = 15)
+freq.term
+```
+
+###Frecuency Words
+```{r}
+matrixreuters <- as.matrix(matrix)
+frequency <- colSums(matrixreuters)
+frequency <- sort(frequency, decreasing=TRUE)
+head(frequency,10)
+```
+
+###Frecuency words removing sparse Terms (this terms apears in a few documents)
+```{r}
+matrixreuters2<- removeSparseTerms(matrix, sparse = 0.95)
+m2 <- as.matrix(matrixreuters2)
+distMatrix <- dist(scale(m2))
+fit <- hclust(distMatrix, method = "ward.D")
+plot(fit)
+rect.hclust(fit, k = 6) # cut tree into 6 clusters 
+```
+```{r}
+frequency2 <- colSums(m2)
+frequency2 <- sort(frequency2, decreasing=TRUE)
+head(frequency2,10)
+```
+```{r}
+inspect(matrixreuters2[1:10,1:10])
+```
+##TP-IDF
+
+Normaliza le quita importancia a las palabras que aparecen repetidas en muchos documentos. Le quita peso.
+```{r}
+reuters.norm <- weightTfIdf(matrix)
+inspect(reuters.norm[1:10,1:10])
+```
+```{r}
+reuters.norm.matrix <- as.matrix(reuters.norm)
+frequency.norm <- colSums(reuters.norm.matrix)
+frequency.norm <- sort(frequency.norm, decreasing=TRUE)
+head(frequency.norm)
+```
+###La matriz de resultados normalizados la podemos pasar a data.frame
+```{r}
+Res <- as.data.frame(inspect(reuters.norm[,c("said","company")]))
+```
+```{r}
+Res[,"company"]
+```
+##Words correlation
+```{r}
+findAssocs(matrix, "dlrs", 0.6) 
+findAssocs(matrix, "said", 0.6)
+findAssocs(matrix, "pct", 0.6)
+findAssocs(matrix, "mln", 0.6)
+```
+
