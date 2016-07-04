@@ -218,7 +218,7 @@ WordCloud reuters
     wordcloud(reuters,scale=c(5,0.5),max.words=100,random.order=FALSE,rot.per=0.35,use.r.layout=FALSE,
               colors=brewer.pal(8, "Dark2"))
 
-![](Text_Mining_tm_files/figure-markdown_strict/unnamed-chunk-10-1.png)
+![](https://github.com/MontseFigueiro/Text_Mining_Word_Cloud/blob/master/unnamed-chunk-10-1.png)
 \#\#word matrix
 
     matrix <- DocumentTermMatrix(reuters) #matriz original de frecuencias
@@ -256,7 +256,7 @@ WordCloud reuters
 
     wordcloud(names(frequency), frequency ,min.freq=15, colors=brewer.pal(6, "Dark2"))
 
-![](Text_Mining_tm_files/figure-markdown_strict/unnamed-chunk-13-1.png)
+![](https://github.com/MontseFigueiro/Text_Mining_Word_Cloud/blob/master/unnamed-chunk-13-1.png)
 \#\#\#Frecuency words removing sparse Terms (this terms apears in a few
 documents)
 
@@ -267,7 +267,7 @@ documents)
     plot(fit)
     rect.hclust(fit, k = 6) # cut tree into 6 clusters 
 
-![](Text_Mining_tm_files/figure-markdown_strict/unnamed-chunk-14-1.png)
+![](https://github.com/MontseFigueiro/Text_Mining_Word_Cloud/blob/master/unnamed-chunk-14-1.png)
 
     frequency2 <- colSums(m2)
     frequency2 <- sort(frequency2, decreasing=TRUE)
