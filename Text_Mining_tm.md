@@ -115,6 +115,8 @@ Data reuters
     ## Metadata:  16
     ## Content:  chars: 1287
 
+### Inspect one document inside Corpus
+
     inspect(reuters[1])
 
     ## <<VCorpus>>
@@ -155,6 +157,30 @@ Data reuters
     reuters[[1]]$content
 
     ## [1] "Computer Terminal Systems Inc said\nit has completed the sale of 200,000 shares of its common\nstock, and warrants to acquire an additional one mln shares, to\n<Sedio N.V.> of Lugano, Switzerland for 50,000 dlrs.\n    The company said the warrants are exercisable for five\nyears at a purchase price of .125 dlrs per share.\n    Computer Terminal said Sedio also has the right to buy\nadditional shares and increase its total holdings up to 40 pct\nof the Computer Terminal's outstanding common stock under\ncertain circumstances involving change of control at the\ncompany.\n    The company said if the conditions occur the warrants would\nbe exercisable at a price equal to 75 pct of its common stock's\nmarket price at the time, not to exceed 1.50 dlrs per share.\n    Computer Terminal also said it sold the technolgy rights to\nits Dot Matrix impact technology, including any future\nimprovements, to <Woodco Inc> of Houston, Tex. for 200,000\ndlrs. But, it said it would continue to be the exclusive\nworldwide licensee of the technology for Woodco.\n    The company said the moves were part of its reorganization\nplan and would help pay current operation costs and ensure\nproduct delivery.\n    Computer Terminal makes computer generated labels, forms,\ntags and ticket printers and terminals.\n Reuter"
+
+    strwrap(reuters[[1]])
+
+    ##  [1] "Computer Terminal Systems Inc said it has completed the sale of"   
+    ##  [2] "200,000 shares of its common stock, and warrants to acquire an"    
+    ##  [3] "additional one mln shares, to <Sedio N.V.> of Lugano, Switzerland" 
+    ##  [4] "for 50,000 dlrs.  The company said the warrants are exercisable"   
+    ##  [5] "for five years at a purchase price of .125 dlrs per share."        
+    ##  [6] "Computer Terminal said Sedio also has the right to buy additional" 
+    ##  [7] "shares and increase its total holdings up to 40 pct of the"        
+    ##  [8] "Computer Terminal's outstanding common stock under certain"        
+    ##  [9] "circumstances involving change of control at the company.  The"    
+    ## [10] "company said if the conditions occur the warrants would be"        
+    ## [11] "exercisable at a price equal to 75 pct of its common stock's"      
+    ## [12] "market price at the time, not to exceed 1.50 dlrs per share."      
+    ## [13] "Computer Terminal also said it sold the technolgy rights to its"   
+    ## [14] "Dot Matrix impact technology, including any future improvements,"  
+    ## [15] "to <Woodco Inc> of Houston, Tex. for 200,000 dlrs. But, it said it"
+    ## [16] "would continue to be the exclusive worldwide licensee of the"      
+    ## [17] "technology for Woodco.  The company said the moves were part of"   
+    ## [18] "its reorganization plan and would help pay current operation costs"
+    ## [19] "and ensure product delivery.  Computer Terminal makes computer"    
+    ## [20] "generated labels, forms, tags and ticket printers and terminals."  
+    ## [21] "Reuter"
 
 Un Corpus es una lista de documentos; cada documento tiene el texto y un
 conjunto de metadatos (que no usaremos)
@@ -228,7 +254,11 @@ WordCloud reuters
     ##    will 
     ##      35
 
-### Frecuency words removing sparse Terms (this terms apears in a few documents)
+    wordcloud(names(frequency), frequency ,min.freq=15, colors=brewer.pal(6, "Dark2"))
+
+![](Text_Mining_tm_files/figure-markdown_strict/unnamed-chunk-13-1.png)
+\#\#\#Frecuency words removing sparse Terms (this terms apears in a few
+documents)
 
     matrixreuters2<- removeSparseTerms(matrix, sparse = 0.95)
     m2 <- as.matrix(matrixreuters2)
@@ -237,7 +267,7 @@ WordCloud reuters
     plot(fit)
     rect.hclust(fit, k = 6) # cut tree into 6 clusters 
 
-![](Text_Mining_tm_files/figure-markdown_strict/unnamed-chunk-13-1.png)
+![](Text_Mining_tm_files/figure-markdown_strict/unnamed-chunk-14-1.png)
 
     frequency2 <- colSums(m2)
     frequency2 <- sort(frequency2, decreasing=TRUE)
@@ -312,10 +342,12 @@ muchos documentos. Le quita peso.
     reuters.norm.matrix <- as.matrix(reuters.norm)
     frequency.norm <- colSums(reuters.norm.matrix)
     frequency.norm <- sort(frequency.norm, decreasing=TRUE)
-    head(frequency.norm)
+    head(frequency.norm,10)
 
-    ##    shares   liebert      dlrs       rmj      corp       mln 
-    ## 0.7854376 0.7054820 0.6901116 0.6870388 0.6542134 0.6469322
+    ##    shares   liebert      dlrs       rmj      corp       mln    common 
+    ## 0.7854376 0.7054820 0.6901116 0.6870388 0.6542134 0.6469322 0.6450741 
+    ##     stock    groupe   esselte 
+    ## 0.6286385 0.6270951 0.5759037
 
 ### La matriz de resultados normalizados la podemos pasar a data.frame
 

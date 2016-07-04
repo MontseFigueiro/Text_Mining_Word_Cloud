@@ -2,7 +2,7 @@
 title: "Text_Mining_Reuters"
 author: "Montse Figueiro"
 date: "4 de julio de 2016"
-output: html_document
+output: md_document
 ---
 
 ```{r setup, include=FALSE}
@@ -72,11 +72,14 @@ reuters <- VCorpus(DirSource(ruta),
 ```{r}
 reuters[[1]]
 ```
+###Inspect one document inside Corpus
 ```{r}
 inspect(reuters[1])
 str(reuters[1])
 reuters[[1]]$content
+strwrap(reuters[[1]])
 ```
+
 Un Corpus es una lista de documentos; cada documento tiene el texto y un conjunto de metadatos (que no usaremos)
 
 
@@ -124,7 +127,9 @@ frequency <- colSums(matrixreuters)
 frequency <- sort(frequency, decreasing=TRUE)
 head(frequency,10)
 ```
-
+```{r}
+wordcloud(names(frequency), frequency ,min.freq=15, colors=brewer.pal(6, "Dark2"))
+```
 ###Frecuency words removing sparse Terms (this terms apears in a few documents)
 ```{r}
 matrixreuters2<- removeSparseTerms(matrix, sparse = 0.95)
@@ -153,8 +158,9 @@ inspect(reuters.norm[1:10,1:10])
 reuters.norm.matrix <- as.matrix(reuters.norm)
 frequency.norm <- colSums(reuters.norm.matrix)
 frequency.norm <- sort(frequency.norm, decreasing=TRUE)
-head(frequency.norm)
+head(frequency.norm,10)
 ```
+
 ###La matriz de resultados normalizados la podemos pasar a data.frame
 ```{r}
 Res <- as.data.frame(inspect(reuters.norm[,c("said","company")]))
