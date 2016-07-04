@@ -10,14 +10,14 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 #Prepocesamiento con el Paquete tm
 
-APUNTES:
 Vamos a terminar construyengo una matriz de frecuencias,las filas son documentos, las entradas son
 el numero de veces que ocurren,las columnas son terminos, puedes estudiar classificacion,
 clustering, detección de temas, representacion grafica, nubes palabras. Los documentos pueden ser novelas, 
 estas matrices son bags of words. es convertirlo en conteo de palabras, con eso destruyes el texto pero 
 puedes hacer ciertas cosas. A veces te quedas con trigramas (trios de palabras) o n-gramas (n palabras consecutivas en el texto)
 Los trigramas son más utiles en el inglés (muy estructurado), proque todo está hecho para le inglés y el español es un poco diferente.
-**ngrams google**
+
+[ngrams](https://books.google.com/ngrams)
 
 ###Matrices de frecuencias: 
   
@@ -51,9 +51,8 @@ Hoy te casas, hoy es adverbio, te es pronombre y casas puede ser nombre overbo, 
 ##Librerias
 ```{r,warning=FALSE,error=FALSE}
 library(tm)
-library(wordcloud)
-library(Rcpp)
 library(RColorBrewer)
+library(wordcloud)
 ```
 ##Corpus Sources and Readers:
 ```{r}  
@@ -70,7 +69,7 @@ ruta
 ```{r}
 reuters <- VCorpus(DirSource(ruta),
                    readerControl = list(reader = readReut21578XMLasPlain))
-
+```{r}
 reuters[[1]]
 ```
 ```{r}
@@ -80,7 +79,8 @@ reuters[[1]]$content
 ```
 Un Corpus es una lista de documentos; cada documento tiene el texto y un conjunto de metadatos (que no usaremos)
 
-##transformaciones: tm_map aplica una función a cada documento
+
+##Transformaciones: tm_map aplica una función a cada documento
 ```{r}
 reuters <- tm_map(reuters, stripWhitespace) # quitar los espacios en blanco que están de más sobre cada comentarios
 reuters <- tm_map(reuters, content_transformer(tolower))#tolower hay que meterla dentro sino no funciona bien,
@@ -106,10 +106,6 @@ Snowreuters[[1]]$content
 ```{r}
 wordcloud(reuters,scale=c(5,0.5),max.words=100,random.order=FALSE,rot.per=0.35,use.r.layout=FALSE,
           colors=brewer.pal(8, "Dark2"))
-```
-```{r}
-wordcloud(Snowreuters,scale=c(5,0.5),max.words=100,random.order=FALSE,rot.per=0.35,use.r.layout=FALSE,
-          colors=brewer.pal(1, "Dark2"))
 ```
 ##word matrix
 
