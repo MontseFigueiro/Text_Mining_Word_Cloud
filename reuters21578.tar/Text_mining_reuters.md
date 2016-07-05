@@ -128,12 +128,12 @@ WordCloud reuters
     wordcloud(reuters,scale=c(5,0.5),max.words=100,random.order=FALSE,rot.per=0.35,use.r.layout=FALSE,
               colors=brewer.pal(8, "Dark2"))
 
-![](Text_mining_reuters_files/figure-markdown_strict/unnamed-chunk-7-1.png)
+![](https://github.com/MontseFigueiro/Text_Mining_Word_Cloud/blob/master/reuters21578.tar/Text_mining_reuters_files/figure-markdown_strict/unnamed-chunk-7-1.png)
 
     wordcloud(Snowreuters,scale=c(5,0.5),max.words=100,random.order=FALSE,rot.per=0.35,use.r.layout=FALSE,
               colors=brewer.pal(8, "Dark2"))
 
-![](Text_mining_reuters_files/figure-markdown_strict/unnamed-chunk-7-2.png)
+![](https://github.com/MontseFigueiro/Text_Mining_Word_Cloud/blob/master/reuters21578.tar/Text_mining_reuters_files/figure-markdown_strict/unnamed-chunk-7-2.png)
 \#\#word matrix
 
     matrix <- DocumentTermMatrix(reuters) #matriz original de frecuencias
@@ -177,7 +177,7 @@ Remove Sparse Terms
     plot(fit)
     rect.hclust(fit, k = 6) # cut tree into 6 clusters 
 
-![](Text_mining_reuters_files/figure-markdown_strict/unnamed-chunk-10-1.png)
+![](https://github.com/MontseFigueiro/Text_Mining_Word_Cloud/blob/master/reuters21578.tar/Text_mining_reuters_files/figure-markdown_strict/unnamed-chunk-10-1.png)
 
     frequency2 <- colSums(m2)
     frequency2 <- sort(frequency2, decreasing=TRUE)
