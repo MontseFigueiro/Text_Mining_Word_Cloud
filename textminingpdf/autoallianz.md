@@ -90,13 +90,28 @@ Word Cloud
     wordcloud(poliza_corpus, max.words=800, random.order=FALSE, scale= c(5, 0.3), colors=brewer.pal(8,"Dark2"))
 
     ## Warning in wordcloud(poliza_corpus, max.words = 800, random.order =
+    ## FALSE, : government could not be fit on page. It will not be plotted.
+
+    ## Warning in wordcloud(poliza_corpus, max.words = 800, random.order =
+    ## FALSE, : procedure could not be fit on page. It will not be plotted.
+
+    ## Warning in wordcloud(poliza_corpus, max.words = 800, random.order =
+    ## FALSE, : social could not be fit on page. It will not be plotted.
+
+    ## Warning in wordcloud(poliza_corpus, max.words = 800, random.order =
+    ## FALSE, : towing could not be fit on page. It will not be plotted.
+
+    ## Warning in wordcloud(poliza_corpus, max.words = 800, random.order =
+    ## FALSE, : whatsoever could not be fit on page. It will not be plotted.
+
+    ## Warning in wordcloud(poliza_corpus, max.words = 800, random.order =
     ## FALSE, : withdraw could not be fit on page. It will not be plotted.
 
     ## Warning in wordcloud(poliza_corpus, max.words = 800, random.order =
     ## FALSE, : withdrawal could not be fit on page. It will not be plotted.
 
 ![](autoallianz_files/figure-markdown_strict/unnamed-chunk-7-1.png)
-\#\#\#Miramos el contenido después de aplicar tm\_map
+\#\#\#Miramos el contenido despuÃ©s de aplicar tm\_map
 
     inspect(poliza_corpus) 
 
@@ -116,15 +131,15 @@ Matriz de Frecuencias
 
     poliza_matrix <- DocumentTermMatrix(poliza_corpus) #matriz original de frecuencias
 
-### Términos más frecuentes en el Documento
+### TÃ©rminos mÃ¡s frecuentes en el Documento
 
     findFreqTerms(poliza_matrix, 100)#aparecen mas de 100 veces
 
     ## [1] "car"       "insurance" "policy"    "will"
 
-    findFreqTerms(poliza_matrix,25)#aparecen más de 50 veces
+    findFreqTerms(poliza_matrix,25)#aparecen mÃ¡s de 50 veces
 
-    ##  [1] "â"        "accidental" "allianz"    "car"        "claim"     
+    ##  [1] "â<U+0080><U+0093>"        "accidental" "allianz"    "car"        "claim"     
     ##  [6] "cover"      "damage"     "insurance"  "insured"    "loss"      
     ## [11] "may"        "motor"      "pay"        "person"     "policy"    
     ## [16] "premium"    "provided"   "section"    "theft"      "will"
@@ -132,7 +147,7 @@ Matriz de Frecuencias
     freq.term <- findFreqTerms(poliza_matrix,lowfreq = 15)
     freq.term
 
-    ##  [1] "â"         "accident"    "accidental"  "additional"  "allianz"    
+    ##  [1] "â<U+0080><U+0093>"         "accident"    "accidental"  "additional"  "allianz"    
     ##  [6] "amount"      "assistance"  "bonus"       "breakdown"   "car"        
     ## [11] "certificate" "change"      "charge"      "claim"       "claims"     
     ## [16] "conditions"  "cost"        "cover"       "covered"     "damage"     
@@ -156,14 +171,14 @@ Matriz frecuencias ordenadas
 
     ##        car     policy       will  insurance     damage      claim 
     ##        144        143        111        102         78         68 
-    ##       loss      motor        pay      cover        may        â 
+    ##       loss      motor        pay      cover        may        â<U+0080><U+0093> 
     ##         65         62         46         42         42         40 
     ##    premium    section      theft    allianz     person accidental 
     ##         36         33         33         31         31         26 
     ##    insured   provided 
     ##         26         25
 
-En la posición 12 hay una palabra erronea que queremos eliminar, la
+En la posiciÃ³n 12 hay una palabra erronea que queremos eliminar, la
 pongo a 0.
 
     frequency[12] <- as.numeric(0)
@@ -172,6 +187,36 @@ Creamos un data.frame con los nombres y las frecuencias y hacemos el WordCloud
 ------------------------------------------------------------------------------
 
     d <- data.frame(word=names, freq=frequency)
-    wordcloud(d$word, d$freq, max.words=800, random.order=FALSE, scale= c(7, 0.3), colors=brewer.pal(8,"Dark2"))
+
+    wordcloud(d$word, d$freq, max.words=500, random.order=FALSE, scale= c(4, 0.3), colors=brewer.pal(8,"Dark2"))
 
 ![](autoallianz_files/figure-markdown_strict/unnamed-chunk-13-1.png)
+\#\#15 Palabras más frecuentes
+
+    best15 <- head(d,15)
+    best15 <- best15[-12,]
+    best15
+
+    ##                word freq
+    ## car             car  144
+    ## policy       policy  143
+    ## will           will  111
+    ## insurance insurance  102
+    ## damage       damage   78
+    ## claim         claim   68
+    ## loss           loss   65
+    ## motor         motor   62
+    ## pay             pay   46
+    ## cover         cover   42
+    ## may             may   42
+    ## premium     premium   36
+    ## section     section   33
+    ## theft         theft   33
+
+    wordcloud(best15$word, best15$freq, max.words=500, random.order=FALSE, scale= c(4, 0.3), colors=brewer.pal(8,"Dark2"))
+
+![](autoallianz_files/figure-markdown_strict/unnamed-chunk-14-1.png)
+
+    barplot(best15$freq, names = best15$word, xlab = "Terms", ylab = "Frequency", main = "Terms Frequencies",las=2)
+
+![](autoallianz_files/figure-markdown_strict/unnamed-chunk-15-1.png)

@@ -35,7 +35,7 @@ Analizamos el contenido, poliza$content
 
 inspect(poliza)
 ```
-###Eliminamos espacios en Blanco, NÃºmeros, PuntuaciÃ³n....
+###Eliminamos espacios en Blanco, Números, Puntuación....
 ```{r}
 poliza <- tm_map(poliza, stripWhitespace)
 poliza <- tm_map(poliza, removeNumbers)
@@ -81,5 +81,17 @@ frequency[12] <- as.numeric(0)
 ##Creamos un data.frame con los nombres y las frecuencias y hacemos el WordCloud
 ```{r,warning=FALSE,error=FALSE}
 d <- data.frame(word=names, freq=frequency)
-wordcloud(d$word, d$freq, max.words=800, random.order=FALSE, scale= c(7, 0.3), colors=brewer.pal(8,"Dark2"))
+
+wordcloud(d$word, d$freq, max.words=500, random.order=FALSE, scale= c(4, 0.3), colors=brewer.pal(8,"Dark2"))
+```
+##15 Palabras más frecuentes
+```{r}
+best15 <- head(d,15)
+best15 <- best15[-12,]
+best15
+
+wordcloud(best15$word, best15$freq, max.words=500, random.order=FALSE, scale= c(4, 0.3), colors=brewer.pal(8,"Dark2"))
+```
+```{r}
+barplot(best15$freq, names = best15$word, xlab = "Terms", ylab = "Frequency", main = "Terms Frequencies",las=2)
 ```
