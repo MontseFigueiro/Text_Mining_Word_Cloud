@@ -1,0 +1,85 @@
+---
+title: "Allianz Auto Mining Text"
+author: "Montse Figueiro"
+date: "5 de julio de 2016"
+output: md_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+##Acceso a las librerias
+```{r}
+library(tm)
+library(RColorBrewer)
+library(wordcloud)
+```
+
+##Descargamos el PDF de un Seguro de Auto.
+```{r}
+url <- "https://www.allianz.ie/car-insurance/faqs/motor_policy_document_0412.pdf"
+dest <- ("autoallianz.pdf")
+download.file(url, dest, mode = "wb")
+```
+
+###Leemos el documento
+```{r}
+Rpdf <- readPDF(control = list(text = "-layout"))
+```
+###Lo pasamos a formato Corpus
+```{r}
+poliza <- Corpus(URISource("autoallianz.pdf"), readerControl = list(reader = Rpdf))
+```
+Analizamos el contenido, poliza$content
+```{r}
+
+inspect(poliza)
+```
+###Eliminamos espacios en Blanco, Números, Puntuación....
+```{r}
+poliza <- tm_map(poliza, stripWhitespace)
+poliza <- tm_map(poliza, removeNumbers)
+poliza <- tm_map(poliza, content_transformer(tolower))
+print(stopwords("en"))
+poliza <- tm_map(poliza, removeWords, stopwords("en"))
+poliza_corpus <- tm_map(poliza,removePunctuation)
+```
+##Word Cloud
+```{r}
+wordcloud(poliza_corpus, max.words=800, random.order=FALSE, scale= c(5, 0.3), colors=brewer.pal(8,"Dark2"))
+```
+###Miramos el contenido después de aplicar tm_map
+```{r}
+inspect(poliza_corpus) 
+```
+writeLines(as.character(poliza_corpus[[1]]))
+
+##Matriz de Frecuencias
+```{r}
+poliza_matrix <- DocumentTermMatrix(poliza_corpus) #matriz original de frecuencias
+```
+###Términos más frecuentes en el Documento
+```{r}
+findFreqTerms(poliza_matrix, 100)#aparecen mas de 100 veces
+findFreqTerms(poliza_matrix,25)#aparecen más de 50 veces
+freq.term <- findFreqTerms(poliza_matrix,lowfreq = 15)
+freq.term
+```
+
+##Matriz frecuencias ordenadas
+```{r}
+poliza_matrix <- as.matrix(poliza_matrix)
+frequency <- colSums(poliza_matrix)
+frequency <- sort(frequency, decreasing=TRUE)
+names <- names(frequency)
+head(frequency,20)
+```
+En la posición 12 hay una palabra erronea que queremos eliminar, la pongo a 0.
+```{r}
+frequency[12] <- as.numeric(0)
+```
+##Creamos un data.frame con los nombres y las frecuencias y hacemos el WordCloud
+```{r,warning=FALSE,error=FALSE}
+d <- data.frame(word=names, freq=frequency)
+wordcloud(d$word, d$freq, max.words=800, random.order=FALSE, scale= c(7, 0.3), colors=brewer.pal(8,"Dark2"))
+```
