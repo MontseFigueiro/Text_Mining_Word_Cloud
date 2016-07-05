@@ -110,7 +110,7 @@ Word Cloud
     ## Warning in wordcloud(poliza_corpus, max.words = 800, random.order =
     ## FALSE, : withdrawal could not be fit on page. It will not be plotted.
 
-![](autoallianz_files/figure-markdown_strict/unnamed-chunk-7-1.png)
+![](https://github.com/MontseFigueiro/Text_Mining_Word_Cloud/blob/master/textminingpdf/autoallianz_files/figure-markdown_strict/unnamed-chunk-7-1.png)
 \#\#\#Miramos el contenido despuÃ©s de aplicar tm\_map
 
     inspect(poliza_corpus) 
@@ -190,7 +190,7 @@ Creamos un data.frame con los nombres y las frecuencias y hacemos el WordCloud
 
     wordcloud(d$word, d$freq, max.words=500, random.order=FALSE, scale= c(4, 0.3), colors=brewer.pal(8,"Dark2"))
 
-![](autoallianz_files/figure-markdown_strict/unnamed-chunk-13-1.png)
+![](https://github.com/MontseFigueiro/Text_Mining_Word_Cloud/blob/master/textminingpdf/autoallianz_files/figure-markdown_strict/unnamed-chunk-13-1.png)
 \#\#15 Palabras más frecuentes
 
     best15 <- head(d,15)
@@ -215,8 +215,8 @@ Creamos un data.frame con los nombres y las frecuencias y hacemos el WordCloud
 
     wordcloud(best15$word, best15$freq, max.words=500, random.order=FALSE, scale= c(4, 0.3), colors=brewer.pal(8,"Dark2"))
 
-![](autoallianz_files/figure-markdown_strict/unnamed-chunk-14-1.png)
+![](https://github.com/MontseFigueiro/Text_Mining_Word_Cloud/blob/master/textminingpdf/autoallianz_files/figure-markdown_strict/unnamed-chunk-14-1.png)
 
     barplot(best15$freq, names = best15$word, xlab = "Terms", ylab = "Frequency", main = "Terms Frequencies",las=2)
 
-![](autoallianz_files/figure-markdown_strict/unnamed-chunk-15-1.png)
+![](https://github.com/MontseFigueiro/Text_Mining_Word_Cloud/blob/master/textminingpdf/autoallianz_files/figure-markdown_strict/unnamed-chunk-15-1.png)
